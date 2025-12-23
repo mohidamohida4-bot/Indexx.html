@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Please... I'm Begging 🥺</title>
+    <script src="cdn.jsdelivr.net"></script>
+    <style>
+        :root {
+            --bg-color: #fff5f5;
+            --heart-red: #ff4b6b;
+            --text-gray: #4a4a4a;
+        }
+
+        body, html { 
+            height: 100%; margin: 0; padding: 0; overflow: hidden;
+            background-color: var(--bg-color);
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            display: flex; justify-content: center; align-items: center;
+            transition: background-color 0.5s ease;
+        }
+
+        /* The Card */
+        .card {
+            width: 85%; max-width: 350px;
+            background: white; padding: 40px 25px;
+            border-radius: 45px; text-align: center;
+            box-shadow: 0 25px 50px rgba(255, 75, 107, 0.15);
+            border: 2px solid #ffe3e3;
+            z-index: 10; position: relative;
+        }
+
+        /* Floating Tears/Droplets */
+        .tear {
+            position: absolute; color: #a2c2e1; pointer-events: none;
+            animation: fall 1.5s linear forwards; font-size: 20px; z-index: 1;
+        }
+        @keyframes fall { to { transform: translateY(100vh); opacity: 0; } }
+
+        .emoji-stage { font-size: 90px; display: block; margin-bottom: 10px; }
+        
+        h1 { color: var(--heart-red); font-size: 1.8rem; margin: 0; font-weight: 800; }
+        #plead-msg { color: var(--text-gray); font-size: 1.1rem; margin: 15px 0 25px; line-height: 1.5; height: 3.5em; }
+
+        .btn-stack { display: flex; flex-direction: column; align-items: center; gap: 15px; }
+
+        .btn {
+            width: 100%; padding: 20px; border-radius: 25px; border: none; 
+            font-weight: 800; font-size: 1.1rem; cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #yes {
+            background: var(--heart-red); color: white;
+            box-shadow: 0 10px 25px rgba(255, 75, 107, 0.4);
+            z-index: 20;
+        }
+
+        #no {
+            background: #f0f0f0; color: #a1a1a1;
+            font-size: 0.8rem; width: auto; padding: 12px 25px;
+        }
+
+        /* Success screen */
+        #success-content { display: none; }
+        .bouncing { animation: bounce 0.6s infinite alternate; }
+        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-15px); } }
+    </style>
+</head>
+<body>
+    <div class="card" id="main-card">
+        <div id="ask-content">
+            <span class="emoji-stage" id="face">🥺</span>
+            <h1>I'm So Sorry...</h1>
+            <p id="plead-msg">I've been thinking about it all day... Can you find it in your beautiful heart to forgive me? 🌸</p>
+            
+            <div class="btn-stack">
+                <button class="btn" id="yes">Yes, I forgive you! ❤️</button>
+                <button class="btn" id="no">No! 😤</button>
+            </div>
+        </div>
+
+        <div id="success-content">
+            <span class="emoji-stage bouncing">💖</span>
+            <h1 style="color: #2ecc71;">THANK YOU!</h1>
+            <p>You have no idea how much this means to me. I promise to make you the happiest person ever! 🍦✨</p>
+        </div>
+    </div>
+
+    <script>
+        const no = document.getElementById('no');
+        const yes = document.getElementById('yes');
+        const face = document.getElementById('face');
+        const msg = document.getElementById('plead-msg');
+        const body = document.body;
+
+        const messages = [
+            "Are you really sure? 😭",
+            "P-please... I'll buy you anything! 🍫",
+            "I'm actually gonna cry... 🥺",
+            "Don't be so cold! ❄️",
+            "I'll do all your chores for a week! 🧼",
+            "Look at my sad puppy face! 🐕",
+            "I'm fading away into sadness... 😔",
+            "Okay, now I'm heartbroken. 💔",
+            "I'LL DO ANYTHING! 🙇‍♂️"
+        ];
+
+        let count = 0;
+        let yesScale = 1;
+
+        function startPleading() {
+            // 1. Text Cycle
+            if(count < messages.length) {
+                no.innerText = messages[count];
+                msg.innerText = messages[count];
+                count++;
+            }
+
+            // 2. Emotional Background (Turns more pink/red as they say No)
+            const redIntensity = Math.min(count * 20, 255);
+            body.style.backgroundColor = `rgb(255, ${245 - (count * 15)}, ${245 - (count * 15)})`;
+
+            // 3. Growth Logic (Yes button consumes the screen)
+            yesScale += 0.25;
+            yes.style.transform = `scale(${yesScale})`;
+            
+            // 4. Face Evolution
+            const faces = ["😢", "😭", "🥀", "💔", "🩹", "🧎‍♂️"];
+            face.innerText = faces[Math.floor(Math.random() * faces.length)];
+
+            // 5. Button Dodge (Android touch optimized)
+            const x = Math.random() * (window.innerWidth - no.offsetWidth - 30);
+            const y = Math.random() * (window.innerHeight - no.offsetHeight - 30);
+            no.style.position = 'fixed';
+            no.style.left = `${x}px`;
+            no.style.top = `${y}px`;
+
+            // 6. Tear Effect
+            const tear = document.createElement('div');
+            tear.className = 'tear';
+            tear.innerHTML = '💧';
+            tear.style.left = Math.random() * 100 + 'vw';
+            tear.style.top = '-20px';
+            document.body.appendChild(tear);
+            setTimeout(() => tear.remove(), 1500);
+        }
+
+        no.addEventListener('mouseover', startPleading);
+        no.addEventListener('touchstart', (e) => { 
+            e.preventDefault(); 
+            startPleading(); 
+        });
+
+        yes.onclick = () => {
+            document.getElementById('ask-content').style.display = 'none';
+            document.getElementById('success-content').style.display = 'block';
+            body.style.backgroundColor = "#f2fff7";
+            confetti({
+                particleCount: 200,
+                spread: 90,
+                origin: { y: 0.6 },
+                colors: ['#ff4b6b', '#2ecc71', '#ffffff']
+            });
+        };
+    </script>
+</body>
+</html>
